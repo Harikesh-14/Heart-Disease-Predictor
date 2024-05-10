@@ -6,7 +6,7 @@ function Header() {
     <section className="w-full px-1 py-2 bg-gray-200">
       <nav className="mx-auto flex items-center gap-5">
         <div className="md:w-2/5">
-          <h1 className="text-lg font-semibold md:text-3xl text-blue-600">Heart Disease Predictor</h1>
+          <h1 className="text-lg font-semibold md:text-3xl text-blue-600">CardioCare</h1>
         </div>
 
         <div>
