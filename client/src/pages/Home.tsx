@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom"
-import { FaQuestionCircle } from 'react-icons/fa'
 import { useState } from "react"
+import { FaQuestionCircle } from 'react-icons/fa'
+
 import Heading from "../container/Heading"
 
 function Home() {
@@ -20,15 +20,15 @@ function Home() {
   const [hoverHeartRate, setHoverHeartRate] = useState<Boolean>(false)
   const [hoverGlucose, setHoverGlucose] = useState<Boolean>(false)
 
-  const [gender, setGender] = useState<string>('')
+  const [gender, setGender] = useState<number>(-1)
   const [age, setAge] = useState<number>(0)
-  const [education, setEducation] = useState<number>(0)
-  const [smoker, setSmoker] = useState<string>('')
+  const [education, setEducation] = useState<number>(-1)
+  const [smoker, setSmoker] = useState<number>(-1)
   const [cigPerDay, setCigPerDay] = useState<number>(0)
-  const [bpMeds, setBpMeds] = useState<string>('')
-  const [stroke, setStroke] = useState<string>('')
-  const [hypertension, setHypertension] = useState<string>('')
-  const [diabetes, setDiabetes] = useState<string>('')
+  const [bpMeds, setBpMeds] = useState<number>(-1)
+  const [stroke, setStroke] = useState<number>(-1)
+  const [hypertension, setHypertension] = useState<number>(-1)
+  const [diabetes, setDiabetes] = useState<number>(-1)
   const [cholesterol, setCholesterol] = useState<number>(0)
   const [systolic, setSystolic] = useState<number>(0)
   const [diastolic, setDiastolic] = useState<number>(0)
@@ -36,11 +36,53 @@ function Home() {
   const [heartRate, setHeartRate] = useState<number>(0)
   const [glucose, setGlucose] = useState<number>(0)
 
+  const [result, setResult] = useState<string>("No result yet")
+
+  const predictHeartDisease = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    try {
+      let response = await fetch("http://127.0.0.1:5000/predict", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          gender,
+          age,
+          education,
+          smoker,
+          cigPerDay,
+          bpMeds,
+          stroke,
+          hypertension,
+          diabetes,
+          cholesterol,
+          systolic,
+          diastolic,
+          bmi,
+          heartRate,
+          glucose
+        })
+      })
+      
+      if (response.ok) {
+        let data = await response.json()
+        setResult(data.result)
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   return (
     <>
       <Heading>Heart Disease Predictor</Heading>
 
-      <section className="md:w-[37rem] mx-auto my-5 p-4 flex flex-col gap-3 bg-gray-50 border rounded-md shadow-sm">
+      <form
+        className="md:w-[37rem] mx-auto my-5 p-4 flex flex-col gap-3 bg-gray-50 border rounded-md shadow-sm"
+        onSubmit={predictHeartDisease}
+      >
         {/* input 1 */}
         <div className="relative flex h-10">
           <label className="w-1/4 flex items-center gap-1 font-medium text-gray-500">
@@ -58,13 +100,14 @@ function Home() {
           </label>
           <select
             className="w-3/4 border px-3"
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
+            value={gender === -1 ? "gender" : (gender === 1 ? "male" : "female")}
+            onChange={(e) => setGender(e.target.value === "male" ? 1 : (e.target.value === "female" ? 0 : -1))}
           >
             <option value="gender">Gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
+            <option value={"male"}>Male</option>
+            <option value={"female"}>Female</option>
           </select>
+
         </div>
 
         {/* input 2 */}
@@ -93,7 +136,7 @@ function Home() {
         {/* input 3 */}
         <div className="relative flex h-10">
           <label className="w-1/4 flex items-center gap-1 font-medium text-gray-500">
-            Eduction
+            Education
             <FaQuestionCircle
               className="text-xs cursor-pointer"
               onMouseEnter={() => setHoverEducation(true)}
@@ -101,21 +144,22 @@ function Home() {
             />
             {hoverEducation && (
               <div className="absolute -top-16 left-14 p-2 rounded-lg shadow-lg bg-gray-100">
-                <p className="text-gray-600">What's your education level [Primary School / High School / College Graduate / Post Graduate]?</p>
+                <p className="text-gray-600">What's your education level?</p>
               </div>
             )}
           </label>
           <select
             className="w-3/4 border px-3"
-            value={education}
-            onChange={(e) => setEducation(parseInt(e.target.value))}
+            value={education === -1 ? "education" : education}
+            onChange={(e) => setEducation(e.target.value === "education" ? -1 : parseInt(e.target.value))}
           >
             <option value="education">What's your education</option>
-            <option value="val1">1.0</option>
-            <option value="val2">2.0</option>
-            <option value="val3">3.0</option>
-            <option value="val4">4.0</option>
+            <option value={1.0}>Primary School</option>
+            <option value={2.0}>High School</option>
+            <option value={3.0}>College Graduate</option>
+            <option value={4.0}>Post Graduate</option>
           </select>
+
         </div>
 
         {/* input 4 */}
@@ -129,25 +173,26 @@ function Home() {
             />
             {hoverSmoker && (
               <div className="absolute -top-10 left-14 p-2 rounded-lg shadow-lg bg-gray-100">
-                <p className="text-gray-600">Do you smoke cigarets daily?</p>
+                <p className="text-gray-600">Do you smoke cigarettes daily?</p>
               </div>
             )}
           </label>
           <select
             className="w-3/4 border px-3"
-            value={smoker}
-            onChange={(e) => setSmoker(e.target.value)}
+            value={smoker === -1 ? "smoker" : (smoker === 1 ? "yes" : "no")}
+            onChange={(e) => setSmoker(e.target.value === "yes" ? 1 : (e.target.value === "no" ? 0 : -1))}
           >
             <option value="smoker">Are you a smoker</option>
             <option value="yes">Yes</option>
             <option value="no">No</option>
           </select>
+
         </div>
 
         {/* input 5 */}
         <div className="relative flex h-10">
           <label className="w-1/4 flex items-center gap-1 font-medium text-gray-500">
-            Cigs/Day
+            Cigarettes Per Day
             <FaQuestionCircle
               className="text-xs cursor-pointer"
               onMouseEnter={() => setHoverCigPerDay(true)}
@@ -155,7 +200,7 @@ function Home() {
             />
             {hoverCigPerDay && (
               <div className="absolute -top-10 left-14 p-2 rounded-lg shadow-lg bg-gray-100">
-                <p className="text-gray-600">How many cigarets do you smoke everyday?</p>
+                <p className="text-gray-600">How many cigarettes do you smoke every day?</p>
               </div>
             )}
           </label>
@@ -170,7 +215,7 @@ function Home() {
         {/* input 6 */}
         <div className="relative flex h-10">
           <label className="w-1/4 flex items-center gap-1 font-medium text-gray-500">
-            BP Meds
+            Blood Pressure Medications
             <FaQuestionCircle
               className="text-xs cursor-pointer"
               onMouseEnter={() => setHoverBpMeds(true)}
@@ -184,8 +229,8 @@ function Home() {
           </label>
           <select
             className="w-3/4 border px-3"
-            value={bpMeds}
-            onChange={(e) => setBpMeds(e.target.value)}
+            value={bpMeds === -1 ? "bpMeds" : (bpMeds === 1 ? "yes" : "no")}
+            onChange={(e) => setBpMeds(e.target.value === "yes" ? 1 : 0)}
           >
             <option value="bpMeds">Blood Pressure Medications</option>
             <option value="yes">Yes</option>
@@ -196,7 +241,7 @@ function Home() {
         {/* input 7 */}
         <div className="relative flex h-10">
           <label className="w-1/4 flex items-center gap-1 font-medium text-gray-500">
-            Strokes
+            Stroke
             <FaQuestionCircle
               className="text-xs cursor-pointer"
               onMouseEnter={() => setHoverStroke(true)}
@@ -210,8 +255,8 @@ function Home() {
           </label>
           <select
             className="w-3/4 border px-3"
-            value={stroke}
-            onChange={(e) => setStroke(e.target.value)}
+            value={stroke === -1 ? "stroke" : (stroke === 1 ? "yes" : "no")}
+            onChange={(e) => setStroke(e.target.value === "yes" ? 1 : 0)}
           >
             <option value="stroke">Have you ever had strokes</option>
             <option value="yes">Yes</option>
@@ -236,8 +281,8 @@ function Home() {
           </label>
           <select
             className="w-3/4 border px-3"
-            value={hypertension}
-            onChange={(e) => setHypertension(e.target.value)}
+            value={hypertension === -1 ? "hypertension" : (hypertension === 1 ? "yes" : "no")}
+            onChange={(e) => setHypertension(e.target.value === "yes" ? 1 : 0)}
           >
             <option value="hypertension">Do you have hypertension</option>
             <option value="yes">Yes</option>
@@ -262,8 +307,8 @@ function Home() {
           </label>
           <select
             className="w-3/4 border px-3"
-            value={diabetes}
-            onChange={(e) => setDiabetes(e.target.value)}
+            value={diabetes === -1 ? "diabetes" : (diabetes === 1 ? "yes" : "no")}
+            onChange={(e) => setDiabetes(e.target.value === "yes" ? 1 : 0)}
           >
             <option value="diabetes">Do you have diabetes</option>
             <option value="yes">Yes</option>
@@ -297,7 +342,7 @@ function Home() {
         {/* input 11 */}
         <div className="relative flex h-10">
           <label className="w-1/4 flex items-center gap-1 font-medium text-gray-500">
-            Sys BP
+            Systolic BP
             <FaQuestionCircle
               className="text-xs cursor-pointer"
               onMouseEnter={() => setHoverSystolic(true)}
@@ -320,7 +365,7 @@ function Home() {
         {/* input 12 */}
         <div className="relative flex h-10">
           <label className="w-1/4 flex items-center gap-1 font-medium text-gray-500">
-            Dia BP
+            Diastolic BP
             <FaQuestionCircle
               className="text-xs cursor-pointer"
               onMouseEnter={() => setHoverDiastolic(true)}
@@ -351,7 +396,7 @@ function Home() {
             />
             {hoverBmi && (
               <div className="absolute -top-10 left-14 p-2 rounded-lg shadow-lg bg-gray-100">
-                <p className="text-gray 600">What's your BMI (Body Mass Index)</p>
+                <p className="text-gray-600">What's your BMI (Body Mass Index)</p>
               </div>
             )}
           </label>
@@ -374,7 +419,7 @@ function Home() {
             />
             {hoverHeartRate && (
               <div className="absolute -top-10 left-14 p-2 rounded-lg shadow-lg bg-gray-100">
-                <p className="text-gray-600">What's your heart rate?</p>
+                <p className="text-gray-600">What's your resting heart rate?</p>
               </div>
             )}
           </label>
@@ -389,7 +434,7 @@ function Home() {
         {/* input 15 */}
         <div className="relative flex h-10">
           <label className="w-1/4 flex items-center gap-1 font-medium text-gray-500">
-            Glucose Level
+            Glucose
             <FaQuestionCircle
               className="text-xs cursor-pointer"
               onMouseEnter={() => setHoverGlucose(true)}
@@ -397,7 +442,7 @@ function Home() {
             />
             {hoverGlucose && (
               <div className="absolute -top-10 left-14 p-2 rounded-lg shadow-lg bg-gray-100">
-                <p className="text-gray-600">What's your glucose level?</p>
+                <p className="text-gray-600">What's your fasting blood sugar level?</p>
               </div>
             )}
           </label>
@@ -409,15 +454,13 @@ function Home() {
           />
         </div>
 
-        <div className="p-5 flex justify-center">
-          <Link
-            to="#"
-            className="w-full text-center text-white font-semibold bg-blue-500 p-2 rounded shadow-md hover:bg-blue-600 transition-all duration-300 ease-in-out cursor-pointer hover:scale-105"
-          >
-            Predict
-          </Link>
-        </div>
-      </section>
+        <button
+          type="submit"
+          className="bg-blue-500 text-white px-5 py-2 rounded-md shadow-md hover:bg-blue-600 transition duration-300"
+        >
+          Predict
+        </button>
+      </form>
     </>
   )
 }

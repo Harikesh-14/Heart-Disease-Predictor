@@ -1,42 +1,61 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import pickle
 
 app = Flask(__name__)
+CORS(app)
 
-# Load the ML model
 with open("heart_model.pkl", "rb") as f:
     model = pickle.load(f)
 
+
 @app.route("/predict", methods=["POST"])
 def predict():
-    # Get data from request body
     data = request.json
-    
-    # Extract data from JSON
-    sex = data['sex']
-    age = data['age']
-    education = data['education']
-    currentSmoker = data['currentSmoker']
-    cigsPerDay = data['cigsPerDay']
-    BPMeds = data['BPMeds']
-    prevalentStroke = data['prevalentStroke']
-    prevalentHyp = data['prevalentHyp']
-    diabetes = data['diabetes']
-    totChol = data['totChol']
-    sysBP = data['sysBP']
-    diaBP = data['diaBP']
-    BMI = data['BMI']
-    heartRate = data['heartRate']
-    glucose = data['glucose']
 
-    # Make prediction
-    prediction = model.predict([[sex, age, education, currentSmoker, cigsPerDay, BPMeds, prevalentStroke, prevalentHyp, diabetes, totChol, sysBP, diaBP, BMI, heartRate, glucose]])
+    sex = data["gender"]
+    age = data["age"]
+    education = data["education"]
+    currentSmoker = data["smoker"]
+    cigsPerDay = data["cigPerDay"]
+    BPMeds = data["bpMeds"]
+    prevalentStroke = data["stroke"]
+    prevalentHyp = data["hypertension"]
+    diabetes = data["diabetes"]
+    totChol = data["cholesterol"]
+    sysBP = data["systolic"]
+    diaBP = data["diastolic"]
+    BMI = data["bmi"]
+    heartRate = data["heartRate"]
+    glucose = data["glucose"]
 
-    # Return prediction as JSON response
-    if prediction[0] == 1:
-        return jsonify({"result": "Heart disease"})
+    prediction = model.predict(
+        [
+            [
+                sex,
+                age,
+                education,
+                currentSmoker,
+                cigsPerDay,
+                BPMeds,
+                prevalentStroke,
+                prevalentHyp,
+                diabetes,
+                totChol,
+                sysBP,
+                diaBP,
+                BMI,
+                heartRate,
+                glucose,
+            ]
+        ]
+    )
+
+    if prediction[0] == 0:
+        return jsonify({"result": "No heart disease"}), 200
     else:
-        return jsonify({"result": "No heart disease"})
+        return jsonify({"result": "Heart disease"}), 200
+
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
