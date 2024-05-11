@@ -36,7 +36,7 @@ function Home() {
   const [heartRate, setHeartRate] = useState<number>(0)
   const [glucose, setGlucose] = useState<number>(0)
 
-  const [result, setResult] = useState<string>("No result yet")
+  // const [result, setResult] = useState<string>("No result yet")
 
   const predictHeartDisease = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -68,7 +68,7 @@ function Home() {
       
       if (response.ok) {
         let data = await response.json()
-        setResult(data.result)
+        alert(data.result)
       }
     } catch (error) {
       console.error(error)
