@@ -20,6 +20,22 @@ function Home() {
   const [hoverHeartRate, setHoverHeartRate] = useState<Boolean>(false)
   const [hoverGlucose, setHoverGlucose] = useState<Boolean>(false)
 
+  const [gender, setGender] = useState<string>('')
+  const [age, setAge] = useState<number>(0)
+  const [education, setEducation] = useState<number>(0)
+  const [smoker, setSmoker] = useState<string>('')
+  const [cigPerDay, setCigPerDay] = useState<number>(0)
+  const [bpMeds, setBpMeds] = useState<string>('')
+  const [stroke, setStroke] = useState<string>('')
+  const [hypertension, setHypertension] = useState<string>('')
+  const [diabetes, setDiabetes] = useState<string>('')
+  const [cholesterol, setCholesterol] = useState<number>(0)
+  const [systolic, setSystolic] = useState<number>(0)
+  const [diastolic, setDiastolic] = useState<number>(0)
+  const [bmi, setBmi] = useState<number>(0)
+  const [heartRate, setHeartRate] = useState<number>(0)
+  const [glucose, setGlucose] = useState<number>(0)
+
   return (
     <>
       <Heading>Heart Disease Predictor</Heading>
@@ -40,7 +56,11 @@ function Home() {
               </div>
             )}
           </label>
-          <select className="w-3/4 border px-3">
+          <select
+            className="w-3/4 border px-3"
+            value={gender}
+            onChange={(e) => setGender(e.target.value)}
+          >
             <option value="gender">Gender</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
@@ -65,6 +85,8 @@ function Home() {
           <input
             type="number"
             className="w-3/4 border px-3"
+            value={age}
+            onChange={(e) => setAge(parseInt(e.target.value))}
           />
         </div>
 
@@ -83,8 +105,12 @@ function Home() {
               </div>
             )}
           </label>
-          <select className="w-3/4 border px-3">
-            <option value="education">Education</option>
+          <select
+            className="w-3/4 border px-3"
+            value={education}
+            onChange={(e) => setEducation(parseInt(e.target.value))}
+          >
+            <option value="education">What's your education</option>
             <option value="val1">1.0</option>
             <option value="val2">2.0</option>
             <option value="val3">3.0</option>
@@ -107,8 +133,12 @@ function Home() {
               </div>
             )}
           </label>
-          <select className="w-3/4 border px-3">
-            <option value="smoker">Smoker</option>
+          <select
+            className="w-3/4 border px-3"
+            value={smoker}
+            onChange={(e) => setSmoker(e.target.value)}
+          >
+            <option value="smoker">Are you a smoker</option>
             <option value="yes">Yes</option>
             <option value="no">No</option>
           </select>
@@ -132,6 +162,8 @@ function Home() {
           <input
             type="number"
             className="w-3/4 border px-3"
+            value={cigPerDay}
+            onChange={(e) => setCigPerDay(parseInt(e.target.value))}
           />
         </div>
 
@@ -150,8 +182,12 @@ function Home() {
               </div>
             )}
           </label>
-          <select className="w-3/4 border px-3">
-            <option value="bpMeds">BP Meds</option>
+          <select
+            className="w-3/4 border px-3"
+            value={bpMeds}
+            onChange={(e) => setBpMeds(e.target.value)}
+          >
+            <option value="bpMeds">Blood Pressure Medications</option>
             <option value="yes">Yes</option>
             <option value="no">No</option>
           </select>
@@ -172,8 +208,12 @@ function Home() {
               </div>
             )}
           </label>
-          <select className="w-3/4 border px-3">
-            <option value="stroke">Stroke</option>
+          <select
+            className="w-3/4 border px-3"
+            value={stroke}
+            onChange={(e) => setStroke(e.target.value)}
+          >
+            <option value="stroke">Have you ever had strokes</option>
             <option value="yes">Yes</option>
             <option value="no">No</option>
           </select>
@@ -194,8 +234,12 @@ function Home() {
               </div>
             )}
           </label>
-          <select className="w-3/4 border px-3">
-            <option value="hypertension">Hypertension</option>
+          <select
+            className="w-3/4 border px-3"
+            value={hypertension}
+            onChange={(e) => setHypertension(e.target.value)}
+          >
+            <option value="hypertension">Do you have hypertension</option>
             <option value="yes">Yes</option>
             <option value="no">No</option>
           </select>
@@ -216,8 +260,12 @@ function Home() {
               </div>
             )}
           </label>
-          <select className="w-3/4 border px-3">
-            <option value="diabetes">Diabetes</option>
+          <select
+            className="w-3/4 border px-3"
+            value={diabetes}
+            onChange={(e) => setDiabetes(e.target.value)}
+          >
+            <option value="diabetes">Do you have diabetes</option>
             <option value="yes">Yes</option>
             <option value="no">No</option>
           </select>
@@ -241,6 +289,8 @@ function Home() {
           <input
             type="number"
             className="w-3/4 border px-3"
+            value={cholesterol}
+            onChange={(e) => setCholesterol(parseInt(e.target.value))}
           />
         </div>
 
@@ -262,6 +312,8 @@ function Home() {
           <input
             type="number"
             className="w-3/4 border px-3"
+            value={systolic}
+            onChange={(e) => setSystolic(parseInt(e.target.value))}
           />
         </div>
 
@@ -283,6 +335,8 @@ function Home() {
           <input
             type="number"
             className="w-3/4 border px-3"
+            value={diastolic}
+            onChange={(e) => setDiastolic(parseInt(e.target.value))}
           />
         </div>
 
@@ -304,6 +358,8 @@ function Home() {
           <input
             type="number"
             className="w-3/4 border px-3"
+            value={bmi}
+            onChange={(e) => setBmi(parseInt(e.target.value))}
           />
         </div>
 
@@ -325,6 +381,8 @@ function Home() {
           <input
             type="number"
             className="w-3/4 border px-3"
+            value={heartRate}
+            onChange={(e) => setHeartRate(parseInt(e.target.value))}
           />
         </div>
 
@@ -346,13 +404,15 @@ function Home() {
           <input
             type="number"
             className="w-3/4 border px-3"
+            value={glucose}
+            onChange={(e) => setGlucose(parseInt(e.target.value))}
           />
         </div>
 
         <div className="p-5 flex justify-center">
           <Link
             to="#"
-            className="w-full text-center text-white font-semibold bg-blue-500 p-2 rounded-md shadow-md hover:bg-blue-600 transition-all duration-300 ease-in-out cursor-pointer hover:scale-105"
+            className="w-full text-center text-white font-semibold bg-blue-500 p-2 rounded shadow-md hover:bg-blue-600 transition-all duration-300 ease-in-out cursor-pointer hover:scale-105"
           >
             Predict
           </Link>
